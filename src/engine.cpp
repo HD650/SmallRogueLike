@@ -2,61 +2,42 @@
 
 Engine::Engine()
 {
-	TCODConsole::initRoot(160,90,"test",false);
-	player = new Actor(40,25,'@',TCODColor::white);
-	actors.push_back(player);
-	map = new Map(140,90);
+  TCODConsole::initRoot(160,90,"test",false);
+  player = new Player(40,25,'@',"player",TCODColor::white,100,100);
+  actors.push_back(player);
+  map = new Map(140,90);
 }
 
 Engine::~Engine() 
 {
-	for(auto i=actors.begin();i!=actors.end();i++)
-	{
-		delete (*i);
-	}
-	delete map;
+  for(auto i=actors.begin();i!=actors.end();i++)
+  {
+    delete (*i);
+  }
+  delete map;
 }
 
 void Engine::update() 
 {
-   TCOD_key_t key;
-   TCODSystem::checkForEvent(TCOD_EVENT_KEY_PRESS,&key,NULL);
-   switch(key.vk) {
-       case TCODK_UP : 
-           if (!map->isWall(player->x,player->y-1)) 
-           {
-               player->y--;   
-           }
-       break;
-       case TCODK_DOWN : 
-           if (!map->isWall(player->x,player->y+1)) 
-           {
-               player->y++;
-           }
-       break;
-       case TCODK_LEFT : 
-           if (!map->isWall(player->x-1,player->y)) 
-           {
-               player->x--;
-           }
-       break;
-       case TCODK_RIGHT : 
-           if (!map->isWall(player->x+1,player->y)) 
-           {
-               player->x++;
-           }
-       break;
-       default:break;
-   }
-   map->computeFov();
+  for(auto i=actors.begin();i!=actors.end();i++)
+  {
+    (*i)->update();
+    if((*i)->isRemove())
+    {
+      delete (*i);
+      i=actors.erase(i);
+    }
+  }
+  map->computeFov();
 }
 
 void Engine::render()
 {
-	TCODConsole::root->clear();
-	for(auto i=actors.begin();i!=actors.end();i++)
-	{
-		(*i)->render();
-	}
-	map->render();
+  TCODConsole::root->clear();
+  for(auto i=actors.begin();i!=actors.end();i++)
+  {
+    if(this->map->isInFov((*i)->x,(*i)->y))
+      (*i)->render();
+  }
+  map->render();
 }

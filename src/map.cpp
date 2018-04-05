@@ -50,6 +50,20 @@ bool Map::isInFov(int x, int y)const
 	return false;
 }
 
+bool Map::canWalk(int x, int y)
+{
+	if(isWall(x,y))
+		return false;
+	for(auto i=engine.actors.begin();i!=engine.actors.end();i++)
+	{
+		if((*i)->x==x&&(*i)->y==y)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 void Map::render() const
 {
 	static const TCODColor darkWall(0,0,100);
@@ -101,6 +115,11 @@ void Map::computeFov()
 	map->computeFov(engine.player->x,engine.player->y,engine.player->maxRadius);
 }
 
+void Map::addMonster(int x, int y)
+{
+	engine.actors.push_back(new Monster(x,y,'o',"orc",TCODColor::desaturatedGreen,2,10));
+}
+
 void Map::createRoom(bool first, int x1, int y1, int x2, int y2)
 {
 	dig(x1,y1,x2,y2);
@@ -111,6 +130,16 @@ void Map::createRoom(bool first, int x1, int y1, int x2, int y2)
 	}
 	else
 	{
-
+		TCODRandom* random=TCODRandom::getInstance();
+		int num_monster=random->getInt(0,MAX_MONSTER);
+		for(int i=0;i<num_monster;i++)
+		{
+			int x=random->getInt(x1,x2);
+			int y=random->getInt(y1,y2);
+			if(canWalk(x,y))
+			{
+				addMonster(x,y);
+			}
+		}
 	}
 }

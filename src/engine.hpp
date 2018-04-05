@@ -1,7 +1,9 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
-#include "project.hpp"
+#include "libtcod.hpp"
+#include "player.hpp"
+#include "map.hpp"
 #include <vector>
 
 using namespace std;

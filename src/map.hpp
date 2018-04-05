@@ -1,10 +1,12 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include "project.hpp"
+#include "engine.hpp"
+#include "monster.hpp"
 
 #define ROOM_MAX_SIZE 24
 #define ROOM_MIN_SIZE 12
+#define MAX_MONSTER 3
 
 
 struct Tile
@@ -26,6 +28,8 @@ public:
 	bool isInFov(int x, int y)const;
 	bool isExplored(int x, int y)const;
 	void computeFov();
+	bool canWalk(int x, int y);
+	void addMonster(int x, int y);
 	~Map();
 	int w,h;
 	void render()const;

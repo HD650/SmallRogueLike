@@ -11,3 +11,8 @@ void Actor::render() const
 	TCODConsole::root->setCharForeground(x,y,col);
 }
 
+void Actor::update()
+{
+	
+}
+
