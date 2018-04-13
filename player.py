@@ -1,19 +1,24 @@
-from object import Object
+from database.action.action import action_move
+import object
 from utils import *
 
 
-class Player(Object):
-    def __init__(self):
-        self.hp = 100
-        self.mp = 100
-        self.x = 0
-        self.y = 0
-        self.z = 0
-        self.speed = 5
-        self.node = loadObject("ship.png")
+class Player(object.Object):
+    def __init__(self, parent_node):
+        object.Object.__init__(self, None, None)
+        self.attributes["height"] = 1
+        self.attributes["volume"] = 1
+        self.attributes["value"] = 0
+        self.attributes["texture"] = "player.png"
+        self.attributes["node"] = None
+        self.attributes["update"] = None
+        self.attributes["speed"] = 5
+
+        self.attributes["node"] = load_model(self.attributes["texture"])
+        self.attributes["node"].reparentTo(parent_node)
 
     def key(self, event):
-        pos = self.node.getPos()
+        pos = self.attributes["node"].getPos()
         if event is "w":
             pos.z += 1
         if event is "s":
@@ -22,7 +27,8 @@ class Player(Object):
             pos.x -= 1
         if event is "d":
             pos.x += 1
-        self.node.setPos(pos)
+        action_move(self, pos.x, pos.z)
 
-    def update(self, task):
-        pass
+        if event is "eat":
+            # TODO
+            pass
