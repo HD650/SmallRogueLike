@@ -4,7 +4,7 @@ from utils import *
 
 
 class Player(object.Object):
-    def __init__(self, parent_node):
+    def __init__(self):
         object.Object.__init__(self, None, None)
         self.attributes["height"] = 1
         self.attributes["volume"] = 1
@@ -15,9 +15,8 @@ class Player(object.Object):
         self.attributes["speed"] = 5
 
         self.attributes["node"] = load_model(self.attributes["texture"])
-        self.attributes["node"].reparentTo(parent_node)
 
-    def key(self, event):
+    def handle_key(self, event):
         pos = self.attributes["node"].getPos()
         if event is "w":
             pos.z += 1
@@ -28,7 +27,3 @@ class Player(object.Object):
         if event is "d":
             pos.x += 1
         action_move(self, pos.x, pos.z)
-
-        if event is "eat":
-            # TODO
-            pass
