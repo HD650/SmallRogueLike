@@ -1,20 +1,28 @@
 from panda3d.core import TextNode, TransparencyAttrib
 
+global_models = dict()
+
 
 # load a 2d plane model with or without texture
-def load_model(tex=None, transparency=True):
-    obj = loader.loadModel("models/plane")
-    #obj.setBin("unsorted", 0)
-    #obj.setDepthTest(False)
+def load_model(texture=None, transparency=True):
+    # if we already have the required model, do not load again
+    if texture in global_models:
+        return global_models[texture]
+    # else load the model and save in a global dict for the all future use
+    else:
+        obj = loader.loadModel("models/plane")
+        #obj.setBin("unsorted", 0)
+        #obj.setDepthTest(False)
 
-    if transparency:
-        obj.setTransparency(TransparencyAttrib.MAlpha)
+        if transparency:
+            obj.setTransparency(TransparencyAttrib.MAlpha)
 
-    if tex:
-        tex = loader.loadTexture("textures/" + tex)
-        obj.setTexture(tex, 1)
+        if texture:
+            tex = loader.loadTexture("textures/" + texture)
+            obj.setTexture(tex, 1)
 
-    return obj
+        global_models[texture] = obj
+        return global_models[texture]
 
 
 # recursively read attributes to object
