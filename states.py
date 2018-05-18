@@ -22,13 +22,17 @@ class ControlState(FSM):
     def handle_key(self, event):
         from engine import g_engine as engine
         engine.player.handle_key(event)
-        return False
+        return True
 
 
 class SceneState(FSM):
     def __init__(self):
         FSM.__init__(self, 'SceneState')
         self.control_state = ControlState()
+        self.defaultTransitions = {
+            'Player': ['AI'],
+            'AI': ['Player'],
+        }
 
     # player turn
     def enterPlayer(self):
@@ -43,7 +47,6 @@ class SceneState(FSM):
     # AI turn
     def enterAI(self):
         print("AI turn start\n")
-        pass
 
     # AI turn end
     def exitAI(self):
@@ -53,10 +56,14 @@ class SceneState(FSM):
     def update(self, task):
         if self.state == "Player":
             # player move
+            # self.control_state.update(task)
             pass
-        else:
+        elif self.state == "AI":
             # do the AI staff
-            pass
+            from engine import g_engine as engine
+            for ai in engine.map.conscious_objects:
+                ai.attributes["AI"](ai)
+            self.request("Player")
 
     def handle_key(self, event):
         # if this is AI turn, ignore the key

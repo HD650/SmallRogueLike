@@ -1,20 +1,19 @@
 from database.action.action import action_move
 import object
-from utils import *
 
 
 class Player(object.Object):
     def __init__(self):
-        object.Object.__init__(self, None, None)
-        self.attributes["height"] = 1
-        self.attributes["volume"] = 1
-        self.attributes["value"] = 0
-        self.attributes["texture"] = "player.png"
-        self.attributes["node"] = None
-        self.attributes["update"] = None
-        self.attributes["speed"] = 5
+        attributes = dict()
+        attributes["height"] = 1
+        attributes["volume"] = 1
+        attributes["value"] = 0
+        attributes["texture"] = "player.png"
+        attributes["node"] = None
+        attributes["update"] = None
+        attributes["speed"] = 5
+        object.Object.__init__(self, attributes, None)
 
-        self.attributes["node"] = load_model(self.attributes["texture"])
 
     def handle_key(self, event):
         pos = self.attributes["node"].getPos()

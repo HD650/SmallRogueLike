@@ -1,13 +1,13 @@
-# actions a player or AI can preform
+# actions a player or an object can preform
 from database.action.test import *
 from database.action.effect import *
 
 
-def action_move(op, x, y):
-    if test_can_move(op, x, y):
-        change_location(op, x, y)
+def action_move(operator, x, y):
+    if test_can_move(operator, x, y):
+        change_location(operator, x, y)
 
 
-def action_eat(op, re):
-    if test_can_eat(op, re):
-        re.attributes["onEaten"](op)
+def action_eat(operator, receiver):
+    if test_can_eat(operator, receiver):
+        receiver.attributes["onEaten"](operator)

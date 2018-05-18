@@ -1,4 +1,5 @@
 from utils import *
+from panda3d.core import NodePath
 
 
 class Object:
@@ -8,7 +9,6 @@ class Object:
         self.attributes["height"] = 1
         self.attributes["volume"] = 1
         self.attributes["value"] = 0
-        self.attributes["texture"] = "default.png"
         self.attributes["node"] = None
         self.attributes["update"] = []
 
@@ -16,11 +16,15 @@ class Object:
             # load attributes from database
             load_attribute(data_item, self.attributes)
             # if this object has model and , instance it in the scene
-            if self.attributes["texture"] is not None:
+        if self.attributes["texture"] is not None:
+            model = load_model(self.attributes["texture"])
+            self.attributes["model"] = model
+            if parent_node is not None:
                 # use placeholder and instance api to reuse model
                 self.attributes["node"] = parent_node.attachNewNode(str(self))
-                self.attributes["node"].setPos(x, 0, y)
-                model = load_model(self.attributes["texture"])
-                # objects with same model shared the model data
-                model.instanceTo(self.attributes["node"])
+            else:
+                self.attributes["node"] = NodePath(str(self))
+            self.attributes["node"].setPos(x, 0, y)
+            # objects with same model shared the model data
+            model.instanceTo(self.attributes["node"])
 

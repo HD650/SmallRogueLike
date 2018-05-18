@@ -41,6 +41,7 @@ class Engine(ShowBase):
     def update(self, task):
         # update all the game
         self.game_state.update(task)
+        return task.cont
 
 # the engine singleton
 g_engine = Engine()

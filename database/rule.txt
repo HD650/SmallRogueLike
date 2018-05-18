@@ -1,0 +1,10 @@
+all stuff in a scene are objects
+objects are defined by attributes in object.attributes["attr_name"]
+object holds keywords to decorate themselves, keywords can add additional attributes to an object
+
+key onXXX in attributes and be activate by user or AI, the value must be a function
+eg. onEat, onDrink,
+
+key whenXXX
+
+key updateXXX will be called every frame
