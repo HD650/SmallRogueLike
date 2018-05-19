@@ -1,5 +1,6 @@
 from direct.fsm.FSM import FSM
 from scene import Scene
+from direct.interval.IntervalGlobal import Sequence, Func
 
 
 class ControlState(FSM):
@@ -33,25 +34,26 @@ class SceneState(FSM):
             'Player': ['AI'],
             'AI': ['Player'],
         }
+        self.ai_move = None
+        self.player_move = None
 
     # player turn
     def enterPlayer(self):
         print("Player turn start\n")
-        pass
+        self.player_move = False
 
-    # player turn end
     def exitPlayer(self):
         print("Player turn end\n")
-        pass
+        # do turn clearing here
 
     # AI turn
     def enterAI(self):
         print("AI turn start\n")
+        self.ai_move = False
 
-    # AI turn end
     def exitAI(self):
         print("AI turn end\n")
-        pass
+        # do turn clearing here
 
     def update(self, task):
         if self.state == "Player":
@@ -59,21 +61,52 @@ class SceneState(FSM):
             # self.control_state.update(task)
             pass
         elif self.state == "AI":
-            # do the AI staff
-            from engine import g_engine as engine
-            for ai in engine.map.conscious_objects:
-                ai.attributes["AI"](ai)
-            self.request("Player")
+            # ai will move only once pre turn, so if the ai has moved and currently in an animation(still in AI state),
+            # we do not move it again but wait until the animation end and the state transferred
+            if not self.ai_move:
+                # do the AI staff
+                from engine import g_engine as engine
+                for ai in engine.map.conscious_objects:
+                    ai.attributes["AI"](ai)
+                self.transfer_player()
 
     def handle_key(self, event):
         # if this is AI turn, ignore the key
         if self.state == "AI":
             return
         elif self.state == "Player":
-            next_turn = self.control_state.handle_key(event)
-            # if player input a key that will end this turn, switch to AI turn
-            if next_turn:
-                self.request("AI")
+            # player will move only once pre turn
+            if not self.player_move:
+                next_turn = self.control_state.handle_key(event)
+                # if player input a key that will end this turn, switch to AI turn
+                if next_turn:
+                    self.transfer_ai()
+
+    def transfer_ai(self):
+        # transfer state from player to ai
+        from engine import g_engine
+        temp = g_engine.animation
+        g_engine.animation = Sequence()
+        # do all the object animations and then transfer the state
+        g_engine.animation.append(temp)
+        g_engine.animation.append(Func(self.request, "AI"))
+        g_engine.animation.start()
+        # refresh the animation buffer
+        g_engine.animation = type(temp)()
+        self.player_move = True
+
+    def transfer_player(self):
+        # transfer state from ai to player
+        from engine import g_engine
+        temp = g_engine.animation
+        g_engine.animation = Sequence()
+        # do all the object animations and then transfer the state
+        g_engine.animation.append(temp)
+        g_engine.animation.append(Func(self.request, "Player"))
+        g_engine.animation.start()
+        # refresh the animation buffer
+        g_engine.animation = type(temp)()
+        self.ai_move = True
 
 
 class GameState(FSM):

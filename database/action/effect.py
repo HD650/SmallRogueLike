@@ -1,4 +1,5 @@
 # effects after an action or event occurred
+from direct.interval.IntervalGlobal import *
 
 
 def change_location(receiver, x, z):
@@ -8,8 +9,13 @@ def change_location(receiver, x, z):
     if receiver in g_engine.map.map[loc_now.x][loc_now.z]:
         g_engine.map.map[loc_now.x][loc_now.z].remove(receiver)
 
-    receiver.attributes["node"].setPos((x, loc_now.y, z))
+    loc_now.x = x
+    loc_now.z = z
+    # receiver.attributes["node"].setPos(loc_now)
     g_engine.map.map[x][z].append(receiver)
+
+    animation = LerpPosInterval(receiver.attributes["node"], 0.2, loc_now, blendType='noBlend')
+    g_engine.animation.append(animation)
 
 
 def poison(receiver):

@@ -1,9 +1,9 @@
 from direct.showbase.ShowBase import ShowBase
 from player import Player
 from states import GameState
+from direct.interval.IntervalGlobal import Parallel
 
 
-# TODO merge with the state machine
 # TODO decouple with the ShowBase, to be engine unrelated
 class Engine(ShowBase):
     def __init__(self):
@@ -13,6 +13,7 @@ class Engine(ShowBase):
         self.map = None
         self.player = None
         self.game_state = None
+        self.animation = None
 
         # disable the panda3d default mouse rotation
         self.disableMouse()
@@ -30,6 +31,7 @@ class Engine(ShowBase):
         # load a scene and add player to it
         self.game_state = GameState()
         self.player = Player()
+        self.animation = Parallel()
         # enable pre-frame update function
         self.task_mgr.add(self.update, "game_update")
         self.game_state.request("Scene")

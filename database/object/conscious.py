@@ -1,5 +1,5 @@
 # conscious are keywords decorate objects
-# with a conscious keyword, an object
+# with a conscious keyword, an object have their own will to move or act
 
 from database.action.action import *
 
