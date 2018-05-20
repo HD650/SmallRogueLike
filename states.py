@@ -45,6 +45,8 @@ class SceneState(FSM):
     def exitPlayer(self):
         print("Player turn end\n")
         # do turn clearing here
+        from engine import g_engine
+        g_engine.map.update_mask()
 
     # AI turn
     def enterAI(self):

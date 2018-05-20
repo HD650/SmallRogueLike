@@ -5,6 +5,8 @@ global_models = dict()
 
 # load a 2d plane model with or without texture
 def load_model(texture=None, transparency=True):
+    if texture is None:
+        texture = 'None'
     # if we already have the required model, do not load again
     if texture in global_models:
         return global_models[texture]
@@ -17,7 +19,9 @@ def load_model(texture=None, transparency=True):
         if transparency:
             obj.setTransparency(TransparencyAttrib.MAlpha)
 
-        if texture:
+        if texture == 'None':
+            pass
+        else:
             tex = loader.loadTexture("textures/" + texture)
             obj.setTexture(tex, 1)
 

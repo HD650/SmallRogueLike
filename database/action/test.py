@@ -1,6 +1,14 @@
 # test functions to determine whether a action can been preformed
 
 
+def test_tile_opaque(x, y):
+    from engine import g_engine
+    if g_engine.map.map[x][y][0].attributes["transparent"]:
+        return False
+    else:
+        return True
+
+
 def test_can_move(operator, x, y):
     from engine import g_engine
     if x in g_engine.map.map:

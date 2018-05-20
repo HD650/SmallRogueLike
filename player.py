@@ -14,7 +14,6 @@ class Player(object.Object):
         attributes["speed"] = 5
         object.Object.__init__(self, attributes, None)
 
-
     def handle_key(self, event):
         pos = self.attributes["node"].getPos()
         if event is "w":

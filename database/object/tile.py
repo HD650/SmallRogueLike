@@ -10,12 +10,19 @@ tiles = \
                 "key_word": [materials["stone"]],
                 "texture": "tile/stone_ground.png",
                 "canWalk": True,
+                "transparent": True,
             },
         "grass_ground":
             {
                 "name": "grass ground",
                 "key_word": [materials["grass"]],
                 "texture": "tile/grass_ground.png",
-                "canWalk": True
+                "canWalk": True,
+                "transparent": True,
+            },
+        "fog_of_war":
+            {
+                "name": "name of fog",
+                "texture": None,
             }
     }

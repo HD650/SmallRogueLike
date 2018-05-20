@@ -2,6 +2,17 @@ from direct.showbase.ShowBase import ShowBase
 from player import Player
 from states import GameState
 from direct.interval.IntervalGlobal import Parallel
+from panda3d.core import OrthographicLens
+
+window_ratio = 4/3
+window_height = 30
+window_width = window_height*window_ratio
+
+player_z = -2
+object_z = -1
+tiles_z = 0
+mask_z = -3
+camera_z = -64
 
 
 # TODO decouple with the ShowBase, to be engine unrelated
@@ -17,7 +28,12 @@ class Engine(ShowBase):
 
         # disable the panda3d default mouse rotation
         self.disableMouse()
-        self.camera.setPos(0, -64, 0)
+        # camera debug
+        # self.oobe()
+        lens = OrthographicLens()
+        lens.setFilmSize(window_width, window_height)  # Or whatever is appropriate for your scene
+        self.cam.node().setLens(lens)
+        self.camera.setPos(0, camera_z, 0)
 
         # ready the keyboard event
         self.accept("arrow_left", self.handle_key, ["a"])
