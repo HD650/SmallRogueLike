@@ -10,4 +10,4 @@ def action_move(operator, x, y):
 
 def action_eat(operator, receiver):
     if test_can_eat(operator, receiver):
-        receiver.attributes["onEaten"](operator)
+        receiver["onEaten"](operator)

@@ -12,10 +12,11 @@ class Player(object.Object):
         attributes["node"] = None
         attributes["update"] = None
         attributes["speed"] = 5
+        attributes["collision"] = True
         object.Object.__init__(self, attributes, None)
 
     def handle_key(self, event):
-        pos = self.attributes["node"].getPos()
+        pos = self["node"].getPos()
         if event is "w":
             pos.z += 1
         if event is "s":

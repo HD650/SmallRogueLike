@@ -10,7 +10,8 @@ monsters = \
                 "name": "stone dummy",
                 "key_word": [materials["stone"], conscious["aggressive"]],
                 "texture": "monster.png",
-                "Transparent": False,
+                "transparent": False,
+                "collision": True,
             },
     }
 

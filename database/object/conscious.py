@@ -6,8 +6,8 @@ from database.action.action import *
 
 def chase_player(operator):
     from engine import g_engine as engine
-    loc_now = operator.attributes["node"].getPos()
-    loc_ply = engine.player.attributes["node"].getPos()
+    loc_now = operator["node"].getPos()
+    loc_ply = engine.player["node"].getPos()
     direction = loc_ply - loc_now
     direction.normalize()
     if direction.x > 0:

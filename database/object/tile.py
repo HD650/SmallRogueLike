@@ -4,25 +4,26 @@ from database.object.material import materials
 
 tiles = \
     {
-        "stone_ground":
+        "stone_wall":
             {
-                "name": "stone ground",
+                "name": "stone wall",
                 "key_word": [materials["stone"]],
-                "texture": "tile/stone_ground.png",
-                "canWalk": True,
-                "transparent": True,
+                "texture": "tile/stone_wall.png",
+                "collision": True,
+                "transparent": False,
             },
         "grass_ground":
             {
                 "name": "grass ground",
                 "key_word": [materials["grass"]],
                 "texture": "tile/grass_ground.png",
-                "canWalk": True,
+                "collision": False,
                 "transparent": True,
             },
         "fog_of_war":
             {
-                "name": "name of fog",
+                "name": "fog of war",
                 "texture": None,
+                'visited': False,
             }
     }

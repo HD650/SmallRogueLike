@@ -21,7 +21,7 @@ class Engine(ShowBase):
         # open a window
         ShowBase.__init__(self)
         # important object maintained by engine
-        self.map = None
+        self.scene = None
         self.player = None
         self.game_state = None
         self.animation = None
