@@ -25,8 +25,6 @@ class Scene:
         self.conscious_objects = None
         self.width = None
         self.height = None
-        # record the tiles in fov of player last turn, for fog of war optimize purpose
-        self.fov_buffer = None
 
     def generate_mask(self):
         from engine import mask_z
@@ -45,18 +43,15 @@ class Scene:
             for y in range(100):
                 if random() > 0.8:
                     temp = object.Object(tile.tiles["stone_wall"], self.node)
-                    temp["node"].setPos(x, tiles_z, y)
                 else:
                     temp = object.Object(tile.tiles["grass_ground"], self.node)
-                    temp["node"].setPos(x, tiles_z, y)
-                self.map[x][y].append(temp)
+                self.add_object(temp, x, y, tiles_z)
 
     def generate_objects(self):
         from engine import object_z
         for i in range(20):
             temp = object.Object(monster.monsters["stone_dummy"], self.node)
-            temp["node"].setPos(5*i, object_z, 5*i)
-            self.map[5*i][5*i].append(temp)
+            self.add_object(temp, i*5, i*5, object_z)
             self.conscious_objects.append(temp)
 
     def generate_bitmap(self):
@@ -89,7 +84,6 @@ class Scene:
         self.mask = dict()
         self.coll_bitmap = dict()
         self.tran_bitmap = dict()
-        self.fov_buffer = list()
         self.width = 100
         self.height = 100
         for i in range(100):
@@ -114,12 +108,29 @@ class Scene:
         # generate the collision and transparent bit map according to all the objects generated above
         self.generate_bitmap()
 
+    def add_object(self, obj, x, y, z):
+        from engine import object_z
+        # util method to add a object in scene since object influence al lot meta data in scene
+        # if the obj has no model, addition failed
+        if "node" not in obj:
+            return False
+        else:
+            # update bitmap
+            if "transparent" in obj and not obj["transparent"]:
+                self.tran_bitmap[x][y] = False
+            if "collision" in obj and obj["collision"]:
+                self.coll_bitmap[x][y] = True
+            if z is None:
+                z = object_z
+            obj["node"].setPos(x, z, y)
+            # add to the map data structure
+            self.map[x][y].append(obj)
+
     def add_player(self, player, x, y):
         from engine import player_z, g_engine as engine
-        player["node"].setPos((x, player_z, y))
         player["node"].reparentTo(self.node)
         engine.camera.reparentTo(player["node"])
-        self.map[player["node"].getPos().x][player["node"].getPos().z].append(player)
+        self.add_object(player, x, y, player_z)
         self.player = player
         self.update_mask()
 
@@ -137,24 +148,19 @@ class Scene:
     def remove_mask(self, x, y):
         # all tiles in our sight should be lit
         self.mask[x][y]["node"].setAlphaScale(0)
-        # terrain we seen before will be record
-        self.mask[x][y]["visited"] = True
-        # objects in our sight should be revealed
         for obj in self.map[x][y][1:]:
             obj["node"].setAlphaScale(1.0)
-        # record the tiles we watched
-        self.fov_buffer.append((x, y))
+        # terrain we seen before will be record
+        self.mask[x][y]["visited"] = True
 
     def update_mask(self):
-        # if the tiles in our sight last turn now out of our sight, darken it
-        for loc in self.fov_buffer:
-            if self.mask[loc[0]][loc[1]]["visited"]:
-                self.mask[loc[0]][loc[1]]["node"].setAlphaScale(0.5)
-                # we can't see things in the shadow
-                for obj in self.map[loc[0]][loc[1]][1:]:
-                    obj["node"].setAlphaScale(0)
-        # empty the buffer
-        self.fov_buffer = list()
+        for x in range(self.width):
+            for y in range(self.height):
+                if self.mask[x][y]["visited"]:
+                    self.mask[x][y]["node"].setAlphaScale(0.5)
+                    # we can't see things in the shadow
+                    for obj in self.map[x][y][1:]:
+                        obj["node"].setAlphaScale(0)
         # refresh the fov
         player_loc = self.player["node"].getPos()
         fieldOfView(int(player_loc.x), int(player_loc.z), self.width, self.height, 10, self.remove_mask,
