@@ -30,12 +30,18 @@ def load_model(texture=None, transparency=True):
 
 
 # recursively read attributes to object
-def load_attribute(data_item, attributes):
+def load_attribute(data_item, obj):
     # update attributes from the key word (recursively)
     if "key_word" in data_item:
         for keyword in data_item["key_word"]:
-            load_attribute(keyword, attributes)
+            load_attribute(keyword, obj)
+
+    # load the abilities to this object
+    if "Ability" in data_item:
+        for ability in data_item["Ability"]:
+            temp = ability(obj)
+            obj[ability] = temp
 
     # update attributes from the database item
     for key in data_item:
-        attributes[key] = data_item[key]
+        obj[key] = data_item[key]

@@ -1,19 +1,18 @@
-from database.action.action import action_move
+from database.action.action import *
 import object
+
+player = {
+             "name": "player",
+             "Ability": [MobileAbility],
+             "texture": "player.png",
+             "transparent": False,
+             "collision": True,
+         }
 
 
 class Player(object.Object):
     def __init__(self):
-        attributes = dict()
-        attributes["height"] = 1
-        attributes["volume"] = 1
-        attributes["value"] = 0
-        attributes["texture"] = "player.png"
-        attributes["node"] = None
-        attributes["update"] = None
-        attributes["speed"] = 5
-        attributes["collision"] = True
-        object.Object.__init__(self, attributes, None)
+        object.Object.__init__(self, player, None)
 
     def handle_key(self, event):
         pos = self["node"].getPos()
@@ -25,4 +24,5 @@ class Player(object.Object):
             pos.x -= 1
         if event is "d":
             pos.x += 1
-        action_move(self, pos.x, pos.z)
+
+        do_ability(MobileAbility, self, pos.x, pos.z)

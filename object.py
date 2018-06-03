@@ -2,16 +2,9 @@ from utils import *
 from panda3d.core import NodePath
 
 
-
 class Object(dict):
     def __init__(self, data_item, parent_node, x=0, y=0):
-        dict.__init__(self)
-        # basic attributes
-        self["height"] = 1
-        self["volume"] = 1
-        self["value"] = 0
-        self["node"] = None
-        self["update"] = []
+        super(Object, self).__init__(self)
 
         if data_item is not None:
             # load attributes from database

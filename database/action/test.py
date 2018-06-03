@@ -9,7 +9,7 @@ def test_tile_opaque(x, y):
         return True
 
 
-def test_can_move(operator, x, y):
+def test_can_move(x, y):
     from engine import g_engine
     if x in g_engine.scene.map:
         if y in g_engine.scene.map[x]:

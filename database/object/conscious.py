@@ -20,7 +20,7 @@ def chase_player(operator):
     elif direction.z < 0:
         loc_now.z -= 1
 
-    action_move(operator, loc_now.x, loc_now.z)
+    do_ability(MobileAbility, operator, loc_now.x, loc_now.z)
 
 
 def stroll(operator):
@@ -35,10 +35,12 @@ conscious = \
     {
         "aggressive":
             {
+                "Ability": [MobileAbility],
                 "AI": chase_player,
             },
         "calm":
             {
+                "Ability": [MobileAbility],
                 "AI": stroll,
             },
     }
