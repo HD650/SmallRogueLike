@@ -1,5 +1,6 @@
-from utils import *
 from panda3d.core import NodePath
+
+from src.utils import *
 
 
 class Object(dict):

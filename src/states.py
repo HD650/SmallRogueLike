@@ -1,6 +1,7 @@
 from direct.fsm.FSM import FSM
-from scene import Scene
 from direct.interval.IntervalGlobal import Sequence, Func
+
+from src.scene import Scene
 
 
 class ControlState(FSM):
@@ -21,7 +22,7 @@ class ControlState(FSM):
 
     # handle the input key
     def handle_key(self, event):
-        from engine import g_engine as engine
+        from src.engine import g_engine as engine
         engine.player.handle_key(event)
         return True
 
@@ -45,7 +46,7 @@ class SceneState(FSM):
     def exitPlayer(self):
         print("Player turn end\n")
         # do turn clearing here
-        from engine import g_engine
+        from src.engine import g_engine
         g_engine.scene.update_mask()
 
     # AI turn
@@ -56,7 +57,7 @@ class SceneState(FSM):
     def exitAI(self):
         print("AI turn end\n")
         # do turn clearing here
-        from engine import g_engine
+        from src.engine import g_engine
         g_engine.scene.update_mask()
 
     def update(self, task):
@@ -69,7 +70,7 @@ class SceneState(FSM):
             # we do not move it again but wait until the animation end and the state transferred
             if not self.ai_move:
                 # do the AI staff
-                from engine import g_engine as engine
+                from src.engine import g_engine as engine
                 for ai in engine.scene.conscious_objects:
                     ai["AI"](ai)
                 self.transfer_player()
@@ -88,7 +89,7 @@ class SceneState(FSM):
 
     def transfer_ai(self):
         # transfer state from player to ai
-        from engine import g_engine
+        from src.engine import g_engine
         temp = g_engine.animation
         g_engine.animation = Sequence()
         # do all the object animations and then transfer the state
@@ -101,7 +102,7 @@ class SceneState(FSM):
 
     def transfer_player(self):
         # transfer state from ai to player
-        from engine import g_engine
+        from src.engine import g_engine
         temp = g_engine.animation
         g_engine.animation = Sequence()
         # do all the object animations and then transfer the state
@@ -129,7 +130,7 @@ class GameState(FSM):
     def enterScene(self):
         print("Enter scene map\n")
         # init the scene, spawn player in the scene
-        from engine import g_engine as engine
+        from src.engine import g_engine as engine
         engine.scene = Scene()
         engine.scene.get_ready()
         engine.scene.add_player(engine.player, 0, 0)
@@ -139,7 +140,7 @@ class GameState(FSM):
 
     def exitScene(self):
         print("Exit scene map\n")
-        from engine import g_engine as engine
+        from src.engine import g_engine as engine
         # TODO here we should change the map to global map
         engine.scene = None
         # clean up the scene state to off

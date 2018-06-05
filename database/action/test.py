@@ -2,7 +2,7 @@
 
 
 def test_tile_opaque(x, y):
-    from engine import g_engine
+    from src.engine import g_engine
     if g_engine.scene.tran_bitmap[x][y]:
         return False
     else:
@@ -10,7 +10,7 @@ def test_tile_opaque(x, y):
 
 
 def test_can_move(x, y):
-    from engine import g_engine
+    from src.engine import g_engine
     if x in g_engine.scene.map:
         if y in g_engine.scene.map[x]:
             if not g_engine.scene.coll_bitmap[x][y]:

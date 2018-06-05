@@ -1,5 +1,5 @@
 from database.action.action import *
-import object
+from src import object
 
 player = {
              "name": "player",

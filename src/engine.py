@@ -1,8 +1,9 @@
-from direct.showbase.ShowBase import ShowBase
-from player import Player
-from states import GameState
 from direct.interval.IntervalGlobal import Parallel
+from direct.showbase.ShowBase import ShowBase
 from panda3d.core import OrthographicLens
+
+from src.player import Player
+from src.states import GameState
 
 window_ratio = 4/3
 window_height = 30

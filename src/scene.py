@@ -1,11 +1,12 @@
-from database.object import tile
-from database.object import monster
-from panda3d.core import *
-from database.action.test import test_tile_opaque
-import object
-from fov import fieldOfView
-
 from random import random
+
+from src import object
+from src.fov import fieldOfView
+from panda3d.core import *
+
+from database.action.test import test_tile_opaque
+from database.object import monster
+from database.object import tile
 
 
 class Scene:
@@ -27,7 +28,7 @@ class Scene:
         self.height = None
 
     def generate_mask(self):
-        from engine import mask_z
+        from src.engine import mask_z
         for x in range(100):
             for y in range(100):
                 temp = object.Object(tile.tiles["fog_of_war"], self.node)
@@ -37,7 +38,7 @@ class Scene:
 
     def generate_tiles(self):
         # generate the tiles
-        from engine import tiles_z
+        from src.engine import tiles_z
         # TODO the scene generator
         for x in range(100):
             for y in range(100):
@@ -48,7 +49,7 @@ class Scene:
                 self.add_object(temp, x, y, tiles_z)
 
     def generate_objects(self):
-        from engine import object_z
+        from src.engine import object_z
         for i in range(20):
             temp = object.Object(monster.monsters["stone_dummy"], self.node)
             self.add_object(temp, i*5, i*5, object_z)
@@ -95,7 +96,7 @@ class Scene:
                 self.map[i][ii] = list()
 
         # render this scene
-        from engine import g_engine as engine
+        from src.engine import g_engine as engine
         self.node = NodePath('level')
         self.node.reparentTo(engine.render)
 
@@ -109,7 +110,7 @@ class Scene:
         self.generate_bitmap()
 
     def add_object(self, obj, x, y, z):
-        from engine import object_z
+        from src.engine import object_z
         # util method to add a object in scene since object influence al lot meta data in scene
         # if the obj has no model, addition failed
         if "node" not in obj:
@@ -127,7 +128,7 @@ class Scene:
             self.map[x][y].append(obj)
 
     def add_player(self, player, x, y):
-        from engine import player_z, g_engine as engine
+        from src.engine import player_z, g_engine as engine
         player["node"].reparentTo(self.node)
         engine.camera.reparentTo(player["node"])
         self.add_object(player, x, y, player_z)
