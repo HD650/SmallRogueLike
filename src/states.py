@@ -23,7 +23,7 @@ class ControlState(FSM):
     # handle the input key
     def handle_key(self, event):
         from src.engine import g_engine as engine
-        engine.player.handle_key(event)
+        engine.now_control.handle_key(event)
         return True
 
 

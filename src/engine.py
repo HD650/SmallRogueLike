@@ -1,5 +1,6 @@
 from direct.interval.IntervalGlobal import Parallel
 from direct.showbase.ShowBase import ShowBase
+from src.GUI import GUI
 from panda3d.core import OrthographicLens
 
 from src.player import Player
@@ -24,7 +25,9 @@ class Engine(ShowBase):
         # important object maintained by engine
         self.scene = None
         self.player = None
+        self.now_control = None
         self.game_state = None
+        self.GUI = None
         self.animation = None
 
         # disable the panda3d default mouse rotation
@@ -48,9 +51,16 @@ class Engine(ShowBase):
         # load a scene and add player to it
         self.game_state = GameState()
         self.player = Player()
+        # the object we control may not be player, so we need another variable
+        self.now_control = self.player
+        # let GUI get ready
+        self.GUI = GUI()
+        self.GUI.get_ready()
+        # animation will be play parallel
         self.animation = Parallel()
         # enable pre-frame update function
         self.task_mgr.add(self.update, "game_update")
+        # enter first state of the game
         self.game_state.request("Scene")
 
     def handle_key(self, event):
