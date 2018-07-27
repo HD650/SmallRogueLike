@@ -166,3 +166,19 @@ class Scene:
         player_loc = self.player["node"].getPos()
         fieldOfView(int(player_loc.x), int(player_loc.z), self.width, self.height, 10, self.remove_mask,
                     test_tile_opaque)
+
+    # update function called preturn
+    def turn_update(self):
+        print("Pre turn update")
+        # update all objects
+        for x in range(self.width):
+            for y in range(self.height):
+                for obj in self.map[x][y]:
+                    obj.update()
+        # update all passive interactions AFTER all object finished update
+        for x in range(self.width):
+            for y in range(self.height):
+                for obj in self.map[x][y]:
+                    if "Ability" in obj:
+                        for ab in obj["PassiveInteractSet"]:
+                            obj[ab].update()

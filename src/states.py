@@ -41,6 +41,8 @@ class SceneState(FSM):
     # player turn
     def enterPlayer(self):
         print("Player turn start\n")
+        from src.engine import g_engine
+        g_engine.scene.turn_update()
         self.player_move = False
 
     def exitPlayer(self):
@@ -52,6 +54,8 @@ class SceneState(FSM):
     # AI turn
     def enterAI(self):
         print("AI turn start\n")
+        from src.engine import g_engine
+        g_engine.scene.turn_update()
         self.ai_move = False
 
     def exitAI(self):

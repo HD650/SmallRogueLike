@@ -23,10 +23,11 @@ def do_ability(ability, obj, x, y):
 class InteractionAbility(object):
     def __init__(self, owner_obj):
         super(InteractionAbility, self).__init__()
-        # is this a action(positive) or passive interaction
-        self.positive = None
         self.participants = None
         self.owner = owner_obj
+        # is this a positive interaction, if ture, need control to perfrom, and it will comsume one turn eg. talk to other character
+        # if false, the interaction will happen automatically when object update eg. fire spread
+        self.positive = True
 
     # determine whether this interaction can happen in this circumstances
     def prerequisites(self):
@@ -41,6 +42,11 @@ class InteractionAbility(object):
     def perform(self):
         raise NotImplementedError
 
+    # do some update every turn
+    def update(self):
+        # interaction can have no update, which means it will not automatic happen
+        pass
+    
     # we need use class as the dict key
     def __hash__(self):
         return hash(self.__class__.__name__)

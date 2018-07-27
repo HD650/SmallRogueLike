@@ -23,4 +23,28 @@ class Object(dict):
         # objects with same model shared the model data
         model.instanceTo(self["node"])
 
+        # set datastructure for all candidate interactions for this object
+        # used for optimize off a lot invalid interactions this turn
+        if "Ability" in self:
+            self["PositiveInteractSet"] = set()
+            self["PassiveInteractSet"] = set()
+
+    def update(self):
+        # make sure this object has some abilities
+        if "Ability" in self:
+            for ab in self["Ability"]:
+                # update candidate interact set
+                if self[ab].prerequisites():
+                    if self[ab].positive:
+                        self["PositiveInteractSet"].add(ab)
+                    else:
+                        self["PassiveInteractSet"].add(ab)
+                else:
+                    if self[ab].positive:
+                        self["PositiveInteractSet"].remove(ab)
+                    else:
+                        self["PassiveInteractSet"].remove(ab)
+        # TODO buffer staff
+        pass
+
 
