@@ -25,20 +25,24 @@ class InteractionAbility(object):
         super(InteractionAbility, self).__init__()
         self.participants = None
         self.owner = owner_obj
-        # is this a positive interaction, if ture, need control to perfrom, and it will comsume one turn eg. talk to other character
-        # if false, the interaction will happen automatically when object update eg. fire spread
-        self.positive = True
+        # is this a positive interaction, if ture, need control to perfrom, and it will comsume one turn
+        # eg. talk to other character
+        # if false, the interaction will happen automatically when object update
+        # eg. fire spread
+        self.positive = None
 
     # determine whether this interaction can happen in this circumstances
     def prerequisites(self):
         raise NotImplementedError
 
     # test can this interaction perform with the input objects (since the other may not able to do this interaction)
+    # TODO arguments should be a dict
     def can_interact_with(self, others, x, y):
         # should return None or at least one object in the others
         raise NotImplementedError
 
     # do the interaction
+    # TODO arguments should be a dict, can it might be merged into perform
     def perform(self):
         raise NotImplementedError
 
@@ -55,6 +59,7 @@ class InteractionAbility(object):
         return issubclass(other, InteractionAbility) and self.__class__.__name__ == other.__class__.__nane__
 
 
+# ability to able to move on the scene
 class MobileAbility(InteractionAbility):
     def __init__(self, owner_obj):
         super(MobileAbility, self).__init__(owner_obj)
@@ -83,8 +88,57 @@ class MobileAbility(InteractionAbility):
         change_location(self.owner, self.temp_x, self.temp_y)
 
 
+# ability to able to fight, enable hp, attack, defence, die and many features
+# TODO should be divide to more specific abilities like alive ability and combat ability
+class BaseCombatAbility(InteractionAbility):
+    def __index__(self, owner_obj):
+        super(BaseCombatAbility, self).__init__(owner_obj)
+        self.positive = True
+        self.participants = 2
+        # hp
+        self.owner["Hp"] = -1
+        # physical attack
+        self.owner["P_A"] = -1
+        # physical defence
+        self.owner["P_D"] = 1
+        # whether able to combat onw
+        self.owner["is_combat"] = False
 
+    def prerequisites(self):
+        if self.owner["Hp"] > 0:
+            return self.owner["is_combat"]
+        else:
+            return False
 
+    def can_interact_with(self, others, x, y):
+        cur_pos = self.owner["node"].getPos()
+        cur_pos.x -= x
+        cur_pos.y -= y
+        if abs(cur_pos.x) > 1 or abs(cur_pos.z) > 1:
+            return None
+        result = list()
+        for one in others:
+            if "Ability" in one:
+                if BaseCombatAbility in one["Ability"]:
+                    result.append(one)
+        self.temp_attacker = result[0]
+        return result
 
+    def perform(self):
+        defence = self.temp_attacker[BaseCombatAbility].get_physical_defence()
+        attack = self.get_physical_attack()
+        damage = max(attack - defence, 0)
+        print("%s attacks %s with damage %d", self.owner, self.temp_attacker, damage)
 
+    def update(self):
+        if self.owner["Hp"] <= 0:
+            self.owner["is_combat"] = False
+            # do death logic, spawn died body etc
+            pass
+
+    def get_physical_attack(self):
+        return self.owner["P_A"]
+
+    def get_physical_defence(self):
+        return self.owner["P_D"]
 

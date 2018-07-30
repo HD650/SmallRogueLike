@@ -1,10 +1,11 @@
 all stuff in a scene are objects
-objects are defined by attributes in object.attributes["attr_name"]
-object holds keywords to decorate themselves, keywords can add additional attributes to an object
 
-key onXXX in attributes and be activate by user or AI, the value must be a function
-eg. onEat, onDrink,
+objects are defined by attributes in object.attributes["attr_name"], attributes are mainly introduced to object by abilities and keywords
 
-key whenXXX
+abilities define the behaviour (code) and all relative attributes (variables) a behaviour may need
+objects with same abilities can perform some interaction like combat, talking
+abilities decouple interaction between objects, the interaction code and relative variables are all located at abilities class, not the object itself
+positive abilities can be perform when user or AI command them to, passive abilities will perform automatically
 
-key updateXXX will be called every frame
+keywords are sets of abilities and may modify some specific variable to make abilities special
+object holds keywords to decorate themselves, keywords can add additional attributes and abilities to an object
