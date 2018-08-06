@@ -38,7 +38,7 @@ class InteractionAbility(object):
         raise NotImplementedError
 
     # do the interaction
-    def perform(self):
+    def perform(self, participant):
         raise NotImplementedError
 
     # we need use class as the dict key
@@ -67,18 +67,8 @@ class MobileAbility(InteractionAbility):
         if test_can_move(x, y):
             self.temp_x = x
             self.temp_y = y
-            # return a empty list if can move, since this action has 0 participator
             return list()
-        else:
-            # return None means this action can not be perform on this tile, select others
-            return None
+        return None
 
-    def perform(self):
+    def perform(self, participants):
         change_location(self.owner, self.temp_x, self.temp_y)
-
-
-
-
-
-
-

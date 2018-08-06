@@ -2,11 +2,15 @@ from direct.fsm.FSM import FSM
 from direct.interval.IntervalGlobal import Sequence, Func
 
 from src.scene import Scene
+from src.GUI import GUI
 
 
 class ControlState(FSM):
     def __init__(self):
         FSM.__init__(self, 'ControlState')
+        self.GUI = GUI()
+        self.action_stack = []
+        self.participants = []
 
     # player can move and fight
     def enterMove(self):
@@ -16,15 +20,61 @@ class ControlState(FSM):
     def enterMenu(self):
         pass
 
-    # player do amming
-    def enterAimming(self):
+    # begin to select targets
+    def start_aiming(self, obj, ability):
+        # add the waiting action to stack
+        self.action_stack.append((obj, ability))
+        self.participants = []
+        self.request('Aiming')
+
+    # player has finished selecting targets, apply the action
+    def finish_aiming(self):
+       obj, ability = self.action_stack[-1]
+       # perform the action
+       obj[ability].perform(self.participants)
+       self.action_stack = []
+       self.participants = []
+       self.request('Move')
+
+    # player do aiming
+    def enterAiming(self):
+        # spawn a cursor at the center
         pass
+
+    def exitAiming(self):
+        # set back camera position
+        from src.engine import g_engine
+        pos = g_engine.camera.GetPos()
+        pos.x = 0
+        pos.z = 0
+        g_engine.camera.SetPos(pos)
+
+    # update the ui every frame
+    def update(self):
+        self.GUI.update()
 
     # handle the input key
     def handle_key(self, event):
         from src.engine import g_engine as engine
-        engine.now_control.handle_key(event)
-        return True
+        if self.state == 'Move':
+            engine.now_control.handle_key(event)
+            # true for next turn
+            return True
+        elif self.state == 'Aiming':
+            # return the selected target
+            # TODO make sure handle will only return one target
+            obj, ability = self.action_stack[-1]
+            result = self.GUI.handle_aiming_key(event, obj, ability)
+            # if we found targets, add them to participants
+            if result is not None and len(result) > 0:
+                self.participants.extend(result)
+            if len(self.participants) >= ability.participants:
+                self.finish_aiming()
+                # true for next turn
+                return True
+            return False
+        elif self.state == 'Menu':
+            return self.GUI.handle_menu_key(event)
 
 
 class SceneState(FSM):
@@ -63,8 +113,7 @@ class SceneState(FSM):
     def update(self, task):
         if self.state == "Player":
             # player move
-            # self.control_state.update(task)
-            pass
+            self.control_state.update(task)
         elif self.state == "AI":
             # ai will move only once pre turn, so if the ai has moved and currently in an animation(still in AI state),
             # we do not move it again but wait until the animation end and the state transferred
@@ -133,7 +182,7 @@ class GameState(FSM):
         from src.engine import g_engine as engine
         engine.scene = Scene()
         engine.scene.get_ready()
-        engine.scene.add_player(engine.player, 0, 0)
+        engine.scene.add_player(engine.now_control, 0, 0)
         # player turn
         self.scene_state.request("Player")
         pass
