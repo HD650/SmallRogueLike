@@ -16,7 +16,7 @@ def do_ability(ability, obj, x, y):
                 return False
             # if already get enough participants, apply
             elif len(participants) >= obj[ability].participants:
-                obj[ability].perform()
+                obj[ability].perform(None)
 
 
 # Actions or interactions that objects can preform

@@ -25,7 +25,7 @@ class GUI(object):
     def get_ready(self):
         from src.engine import g_engine
         self.animation = Sequence()
-        self.hp_bar = DirectWaitBar(barColor=red, value=g_engine.now_control["Hp"],
+        self.hp_bar = DirectWaitBar(barColor=red, value=100,
                                     range=100, pos=hp_bar_pos, frameSize=frameSize, text_scale=text_scale)
 
     # GUI process the input, eg. when user open the inventory or select the magic

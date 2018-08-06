@@ -50,7 +50,7 @@ class ControlState(FSM):
         g_engine.camera.SetPos(pos)
 
     # update the ui every frame
-    def update(self):
+    def update(self, task):
         self.GUI.update()
 
     # handle the input key
@@ -92,6 +92,7 @@ class SceneState(FSM):
     def enterPlayer(self):
         print("Player turn start\n")
         self.player_move = False
+        self.control_state.request("Move")
 
     def exitPlayer(self):
         print("Player turn end\n")
