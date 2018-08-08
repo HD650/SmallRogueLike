@@ -29,7 +29,7 @@ class Object(dict):
             self["PositiveInteractSet"] = set()
             self["PassiveInteractSet"] = set()
 
-    def update(self):
+    def turn_update(self):
         # make sure this object has some abilities
         if "Ability" in self:
             for ab in self["Ability"]:
@@ -47,4 +47,5 @@ class Object(dict):
         # TODO buffer staff
         pass
 
-
+    def __str__(self):
+        return self["name"]

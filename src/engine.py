@@ -49,14 +49,14 @@ class Engine(ShowBase):
 
     # TODO the engine get ready do not need to init the scene, this should be done in the state machine
     def get_ready(self):
+        # let gui get ready first, since state machine need a reference of it
+        self.GUI = GUI()
+        self.GUI.get_ready()
         # load a scene and add player to it
         self.game_state = GameState()
         self.player = Player()
         # the object we control may not be player, so we need another variable
         self.now_control = self.player
-        # let GUI get ready
-        self.GUI = GUI()
-        self.GUI.get_ready()
         # animation will be play parallel
         self.animation = Parallel()
         # enable pre-frame update function

@@ -62,6 +62,11 @@ class GUI(object):
     def lost_focus(self):
         pass
 
-    # update the GUI values (pre-turn or per-frame)
+    # update the GUI values (per-frame)
     def update(self):
         pass
+
+    # update the GUI values (per-turn)
+    def turn_update(self):
+        from src.engine import g_engine
+        self.hp_bar["value"] = g_engine.now_control["Hp"]

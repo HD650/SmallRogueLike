@@ -189,7 +189,7 @@ class Scene:
         for x in range(self.width):
             for y in range(self.height):
                 for obj in self.map[x][y]:
-                    obj.update()
+                    obj.turn_update()
         # update all abilities AFTER all object finished update
         # here, passive abilities will try to interact with surrounding objects
         for x in range(self.width):
@@ -197,7 +197,7 @@ class Scene:
                 for obj in self.map[x][y]:
                     if "Ability" in obj:
                         for ab in obj["Ability"]:
-                            obj[ab].update()
+                            obj[ab].turn_update()
         
         from src.engine import g_engine as engine
         # if we are not control player now, share the fov of the object we are controlling now

@@ -45,8 +45,12 @@ class InteractionAbility(object):
     def perform(self, participant):
         raise NotImplementedError
 
+    # do some update every frame
+    def update(self, task):
+        pass
+    
     # do some update every turn
-    def update(self):
+    def turn_update(self):
         # interaction can have no update, which means it will not automatic happen
         pass
     
@@ -126,10 +130,9 @@ class BaseCombatAbility(InteractionAbility):
         defence =participants[0][BaseCombatAbility].get_physical_defence()
         attack = self.get_physical_attack()
         damage = max(attack - defence, 0)
-        print("%s attacks %s with damage %d" % (self.owner, participants[0], damage))
-        participants[0]["Hp"] -= damage
+        close_combat_damage(self.owner, participants[0], damage)
 
-    def update(self):
+    def turn_update(self):
         if self.owner["Hp"] <= 0:
             self.owner["is_combat"] = False
             # do death logic, spawn died body etc

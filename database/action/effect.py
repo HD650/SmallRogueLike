@@ -13,6 +13,17 @@ def change_location(receiver, x, z):
     animation = LerpPosInterval(receiver["node"], 0.1, loc_now, blendType='noBlend')
     g_engine.animation.append(animation)
 
+def close_combat_damage(attacker, receiver, damage):
+    receiver["Hp"] -= damage
+    from src.engine import g_engine
+    attacker_pos = attacker["node"].getPos() 
+    defencer_pos = receiver["node"].getPos()
+    animation = Sequence()
+    animation.append(LerpPosInterval(attacker["node"], 0.05, defencer_pos, blendType='noBlend'))
+    animation.append(LerpPosInterval(attacker["node"], 0.05, attacker_pos, blendType='noBlend'))
+    g_engine.animation.append(animation)
+    print("%s attacks %s with damage %d" % (attacker, receiver, damage))
+
 
 def poison(receiver):
     print(str(receiver) + " has been poisoned!\n")

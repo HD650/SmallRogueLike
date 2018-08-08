@@ -8,7 +8,8 @@ from src.GUI import GUI
 class ControlState(FSM):
     def __init__(self):
         FSM.__init__(self, 'ControlState')
-        self.GUI = GUI()
+        from src.engine import g_engine
+        self.GUI = g_engine.GUI
         self.action_stack = []
         self.participants = []
 
@@ -49,6 +50,10 @@ class ControlState(FSM):
         pos.z = 0
         g_engine.camera.setPos(pos)
 
+    # pre-turn
+    def turn_update(self):
+        self.GUI.turn_update()
+    
     # update the ui every frame
     def update(self, task):
         self.GUI.update()
@@ -95,8 +100,7 @@ class SceneState(FSM):
     # player turn
     def enterPlayer(self):
         print("Player turn start\n")
-        from src.engine import g_engine
-        g_engine.scene.turn_update()
+        self.turn_update()
         self.player_move = False
         self.control_state.request("Move")
 
@@ -109,8 +113,7 @@ class SceneState(FSM):
     # AI turn
     def enterAI(self):
         print("AI turn start\n")
-        from src.engine import g_engine
-        g_engine.scene.turn_update()
+        self.turn_update()
         self.ai_move = False
 
     def exitAI(self):
@@ -119,6 +122,13 @@ class SceneState(FSM):
         from src.engine import g_engine
         g_engine.scene.update_mask()
 
+    # pre-turn
+    def turn_update(self):
+        from src.engine import g_engine
+        g_engine.scene.turn_update()
+        self.control_state.turn_update()
+
+    # pre-frame
     def update(self, task):
         if self.state == "Player":
             # player move
