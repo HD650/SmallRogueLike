@@ -127,6 +127,18 @@ class Scene:
             # add to the map data structure
             self.map[x][y].append(obj)
 
+    def remove_object(self, obj):
+        if "node" not in obj:
+            return False
+        else:
+            pos = obj["node"].getPos()
+            self.map[pos.x][pos.z].remove(obj)
+            obj["node"].removeNode()
+            if "transparent" in obj or "collision" in obj:
+                self.update_bitmap(pos.x, pos.z)
+        if obj in self.conscious_objects:
+            self.conscious_objects.remove(obj) 
+
     def add_player(self, player, x, y):
         from src.engine import player_z, g_engine as engine
         player["node"].reparentTo(self.node)
@@ -178,12 +190,13 @@ class Scene:
             for y in range(self.height):
                 for obj in self.map[x][y]:
                     obj.update()
-        # update all passive interactions AFTER all object finished update
+        # update all abilities AFTER all object finished update
+        # here, passive abilities will try to interact with surrounding objects
         for x in range(self.width):
             for y in range(self.height):
                 for obj in self.map[x][y]:
                     if "Ability" in obj:
-                        for ab in obj["PassiveInteractSet"]:
+                        for ab in obj["Ability"]:
                             obj[ab].update()
         
         from src.engine import g_engine as engine

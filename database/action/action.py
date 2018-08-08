@@ -127,12 +127,15 @@ class BaseCombatAbility(InteractionAbility):
         attack = self.get_physical_attack()
         damage = max(attack - defence, 0)
         print("%s attacks %s with damage %d" % (self.owner, participants[0], damage))
+        participants[0]["Hp"] -= damage
 
     def update(self):
         if self.owner["Hp"] <= 0:
             self.owner["is_combat"] = False
             # do death logic, spawn died body etc
-            pass
+            from src.engine import g_engine
+            g_engine.scene.remove_object(self.owner)
+            print("%s is dead!" % self.owner)
 
     def get_physical_attack(self):
         return self.owner["P_A"]
