@@ -5,6 +5,8 @@ player = {
              "name": "player",
              "Ability": [MobileAbility],
              "texture": "player.png",
+             "hp": 100,
+             "mp": 100,
              "transparent": False,
              "collision": True,
          }

@@ -2,7 +2,7 @@ from random import random
 
 from src import object
 from src.fov import fieldOfView
-from panda3d.core import *
+from panda3d.core import NodePath
 
 from database.action.test import test_tile_opaque
 from database.object import monster
@@ -132,8 +132,10 @@ class Scene:
         player["node"].reparentTo(self.node)
         engine.camera.reparentTo(player["node"])
         self.add_object(player, x, y, player_z)
-        self.player = player
         self.update_mask()
+
+    def get_object(self, x, y):
+        return self.map[x][y]
 
     def move_object(self, obj, ori_x, ori_y, new_x, new_y):
         if obj in self.map[ori_x][ori_y]:
@@ -162,8 +164,9 @@ class Scene:
                     # we can't see things in the shadow
                     for obj in self.map[x][y][1:]:
                         obj["node"].setAlphaScale(0)
+        from src.engine import g_engine as engine
         # refresh the fov
-        player_loc = self.player["node"].getPos()
+        player_loc = engine.player["node"].getPos()
         fieldOfView(int(player_loc.x), int(player_loc.z), self.width, self.height, 10, self.remove_mask,
                     test_tile_opaque)
 
@@ -182,3 +185,10 @@ class Scene:
                     if "Ability" in obj:
                         for ab in obj["PassiveInteractSet"]:
                             obj[ab].update()
+        
+        from src.engine import g_engine as engine
+        # if we are not control player now, share the fov of the object we are controlling now
+        if engine.player is not engine.now_control:
+            player_loc = engine.now_control["node"].getPos()
+            fieldOfView(int(player_loc.x), int(player_loc.z), self.width, self.height, 10, self.remove_mask,
+                        test_tile_opaque)

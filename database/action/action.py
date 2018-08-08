@@ -16,7 +16,7 @@ def do_ability(ability, obj, x, y):
                 return False
             # if already get enough participants, apply
             elif len(participants) >= obj[ability].participants:
-                obj[ability].perform()
+                obj[ability].perform(None)
 
 
 # Actions or interactions that objects can preform
@@ -42,8 +42,7 @@ class InteractionAbility(object):
         raise NotImplementedError
 
     # do the interaction
-    # TODO arguments should be a dict, can it might be merged into perform
-    def perform(self):
+    def perform(self, participant):
         raise NotImplementedError
 
     # do some update every turn
@@ -78,23 +77,20 @@ class MobileAbility(InteractionAbility):
         if test_can_move(x, y):
             self.temp_x = x
             self.temp_y = y
-            # return a empty list if can move, since this action has 0 participator
             return list()
-        else:
-            # return None means this action can not be perform on this tile, select others
-            return None
+        return None
 
-    def perform(self):
+    def perform(self, participants):
         change_location(self.owner, self.temp_x, self.temp_y)
 
 
 # ability to able to fight, enable hp, attack, defence, die and many features
 # TODO should be divide to more specific abilities like alive ability and combat ability
 class BaseCombatAbility(InteractionAbility):
-    def __index__(self, owner_obj):
+    def __init__(self, owner_obj):
         super(BaseCombatAbility, self).__init__(owner_obj)
         self.positive = True
-        self.participants = 2
+        self.participants = 1
         # hp
         self.owner["Hp"] = -1
         # physical attack
@@ -102,7 +98,7 @@ class BaseCombatAbility(InteractionAbility):
         # physical defence
         self.owner["P_D"] = 1
         # whether able to combat onw
-        self.owner["is_combat"] = False
+        self.owner["is_combat"] = True
 
     def prerequisites(self):
         if self.owner["Hp"] > 0:
@@ -113,22 +109,24 @@ class BaseCombatAbility(InteractionAbility):
     def can_interact_with(self, others, x, y):
         cur_pos = self.owner["node"].getPos()
         cur_pos.x -= x
-        cur_pos.y -= y
+        cur_pos.z -= y
         if abs(cur_pos.x) > 1 or abs(cur_pos.z) > 1:
+            print("You can attack objects two blocks away from you.")
             return None
         result = list()
         for one in others:
             if "Ability" in one:
                 if BaseCombatAbility in one["Ability"]:
                     result.append(one)
-        self.temp_attacker = result[0]
+        if len(result) is 0:
+            print("There is no objects to attack!")
         return result
 
-    def perform(self):
-        defence = self.temp_attacker[BaseCombatAbility].get_physical_defence()
+    def perform(self, participants):
+        defence =participants[0][BaseCombatAbility].get_physical_defence()
         attack = self.get_physical_attack()
         damage = max(attack - defence, 0)
-        print("%s attacks %s with damage %d", self.owner, self.temp_attacker, damage)
+        print("%s attacks %s with damage %d" % (self.owner, participants[0], damage))
 
     def update(self):
         if self.owner["Hp"] <= 0:
@@ -141,4 +139,3 @@ class BaseCombatAbility(InteractionAbility):
 
     def get_physical_defence(self):
         return self.owner["P_D"]
-
