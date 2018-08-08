@@ -41,9 +41,9 @@ class Object(dict):
                         self["PassiveInteractSet"].add(ab)
                 else:
                     if self[ab].positive:
-                        self["PositiveInteractSet"].remove(ab)
+                        self["PositiveInteractSet"].discard(ab)
                     else:
-                        self["PassiveInteractSet"].remove(ab)
+                        self["PassiveInteractSet"].discard(ab)
         # TODO buffer staff
         pass
 

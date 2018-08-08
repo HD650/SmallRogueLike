@@ -45,12 +45,13 @@ class GUI(object):
         if event is "d":
             pos.x += 1
 
-        engine.camera.SetPos(pos)
+        engine.camera.setPos(pos)
         
         if event is "enter":
-            player_pos = engine.now_control.getPos()
+            player_pos = engine.now_control["node"].getPos()
             player_pos = player_pos + pos
-            return obj[ability].can_interact_with(None, player_pos.x, player_pos.z)
+            objects = engine.scene.get_object(player_pos.x, player_pos.z)
+            return obj[ability].can_interact_with(objects, player_pos.x, player_pos.z)
             
 
     # camera focus on the cursor

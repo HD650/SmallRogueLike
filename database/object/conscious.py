@@ -35,12 +35,12 @@ conscious = \
     {
         "aggressive":
             {
-                "Ability": [MobileAbility],
+                "Ability": [MobileAbility, BaseCombatAbility],
                 "AI": chase_player,
             },
         "calm":
             {
-                "Ability": [MobileAbility],
+                "Ability": [MobileAbility, BaseCombatAbility],
                 "AI": stroll,
             },
     }

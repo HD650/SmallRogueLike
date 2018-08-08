@@ -3,10 +3,11 @@ from src import object
 
 player = {
              "name": "player",
-             "Ability": [MobileAbility],
+             "Ability": [MobileAbility, BaseCombatAbility],
              "texture": "player.png",
-             "hp": 100,
-             "mp": 100,
+             "Hp": 100,
+             "P_A": 10,
+             "P_D": 5,
              "transparent": False,
              "collision": True,
          }
@@ -26,5 +27,11 @@ class Player(object.Object):
             pos.x -= 1
         if event is "d":
             pos.x += 1
+        if event is 'enter':
+            return BaseCombatAbility
 
+        # move ability is the only ability not handled by gui
         do_ability(MobileAbility, self, pos.x, pos.z)
+       
+        # if player move, go to next turn
+        return True

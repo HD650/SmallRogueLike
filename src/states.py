@@ -44,10 +44,10 @@ class ControlState(FSM):
     def exitAiming(self):
         # set back camera position
         from src.engine import g_engine
-        pos = g_engine.camera.GetPos()
+        pos = g_engine.camera.getPos()
         pos.x = 0
         pos.z = 0
-        g_engine.camera.SetPos(pos)
+        g_engine.camera.setPos(pos)
 
     # update the ui every frame
     def update(self, task):
@@ -57,9 +57,13 @@ class ControlState(FSM):
     def handle_key(self, event):
         from src.engine import g_engine as engine
         if self.state == 'Move':
-            engine.now_control.handle_key(event)
-            # true for next turn
-            return True
+            feedback = engine.now_control.handle_key(event)
+            # if player wants to start an action, feedback is an action
+            if isinstance(feedback, type):
+                self.start_aiming(engine.now_control, feedback)
+            if feedback is True:
+                # True for next turn
+                return True
         elif self.state == 'Aiming':
             # return the selected target
             # TODO make sure handle will only return one target
@@ -68,7 +72,7 @@ class ControlState(FSM):
             # if we found targets, add them to participants
             if result is not None and len(result) > 0:
                 self.participants.extend(result)
-            if len(self.participants) >= ability.participants:
+            if len(self.participants) >= obj[ability].participants:
                 self.finish_aiming()
                 # true for next turn
                 return True
