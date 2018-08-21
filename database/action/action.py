@@ -1,5 +1,6 @@
 from database.action.test import *
 from database.action.effect import *
+from src.utils import *
 
 
 # TODO this should handle the multi-target selection
@@ -59,7 +60,7 @@ class InteractionAbility(object):
         return hash(self.__class__.__name__)
 
     def __eq__(self, other):
-        return issubclass(other, InteractionAbility) and self.__class__.__name__ == other.__class__.__nane__
+        return self.__class__.__name__ == other.__class__.__name__
 
 
 # ability to able to move on the scene
@@ -115,7 +116,7 @@ class BaseCombatAbility(InteractionAbility):
         cur_pos.x -= x
         cur_pos.z -= y
         if abs(cur_pos.x) > 1 or abs(cur_pos.z) > 1:
-            print("You can attack objects two blocks away from you.")
+            add_message("You can attack objects two blocks away from you.")
             return None
         result = list()
         for one in others:
@@ -123,7 +124,7 @@ class BaseCombatAbility(InteractionAbility):
                 if BaseCombatAbility in one["Ability"]:
                     result.append(one)
         if len(result) is 0:
-            print("There is no objects to attack!")
+            add_message("There is no objects to attack!")
         return result
 
     def perform(self, participants):
@@ -138,7 +139,7 @@ class BaseCombatAbility(InteractionAbility):
             # do death logic, spawn died body etc
             from src.engine import g_engine
             g_engine.scene.remove_object(self.owner)
-            print("%s is dead!" % self.owner)
+            add_message("%s is dead!" % self.owner)
 
     def get_physical_attack(self):
         return self.owner["P_A"]

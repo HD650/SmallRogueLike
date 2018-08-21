@@ -1,32 +1,42 @@
 from direct.gui.DirectGui import *
 from direct.interval.IntervalGlobal import *
 
-text_scale = (0.05, 0.05)
-frameSize = (-1, 1, -0.03, 0.03)
-hp_bar_pos = (0.0, 0.0, 0.95)
+hb_text_scale = (0.05, 0.05)
+
+hb_frameSize = (-1, 1, -0.03, 0.03)
+ms_frameSize = (-0.45, 0.45, -1, 1)
+bs_frameSize = (-1, 1, -1, 1)
+
+hb_pos = (0.0, 0.0, 0.90)
+ms_pos = (0.25, 0, 0)
+bs_pos = (-1, -1, -1)
+
 red = (1.0, 0.0, 0.0, 1.0)
+blank = (1.0, 1.0, 1.0, 0.5)
+white = (1.0, 1.0, 1.0, 1.0)
+black = (0.0, 0.0, 0.0, 1.0)
+trans = (1.0, 1.0, 1.0, 0.0)
 
 
-# helper class for all game message display
-class Message(object):
-    def __init__(self):
-        pass
-
+ms_wordwrap = 20
 
 # handle all GUI staff
 class GUI(object):
     def __init__(self):
         self.hp_bar = None
         self.msg_bar = None
+        self.base = None
         self.cursor = None
-        self.animation = None
 
     # get ready make this object fully ready to work, also been rendered in screen
     def get_ready(self):
         from src.engine import g_engine
-        self.animation = Sequence()
+        #self.base = DirectFrame(frameColor=blank, frameSize=bs_frameSize, pos=bs_pos)
         self.hp_bar = DirectWaitBar(barColor=red, value=100,
-                                    range=100, pos=hp_bar_pos, frameSize=frameSize, text_scale=text_scale)
+                                    range=100, pos=hb_pos, frameSize=hb_frameSize, text_scale=hb_text_scale)
+        self.msg_bar = DirectScrolledList(frameColor=blank, pos=ms_pos, numItemsVisible=10)
+        self.msg_bar.incButton['frameColor'] = trans
+        self.msg_bar.decButton['frameColor'] = trans
 
     # GUI process the input, eg. when user open the inventory or select the magic
     def handle_menu_key(self, event):

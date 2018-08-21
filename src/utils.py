@@ -1,7 +1,15 @@
 from panda3d.core import TextNode, TransparencyAttrib
+from direct.gui.DirectGui import *
+from src.GUI import *
 
 global_models = dict()
 
+# add a message on the screen
+def add_message(string):
+    from src.engine import g_engine
+    item = DirectLabel(text = str(string), text_scale=hb_text_scale, frameColor=trans, text_fg=white, text_wordwrap=ms_wordwrap, text_align=TextNode.ALeft, text_shadow=black)
+    key = g_engine.GUI.msg_bar.addItem(item, 1)
+    g_engine.GUI.msg_bar.scrollToItemID(key, True)
 
 # load a 2d plane model with or without texture
 def load_model(texture=None, transparency=True):

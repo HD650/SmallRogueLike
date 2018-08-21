@@ -1,5 +1,6 @@
 # effects after an action or event occurred
 from direct.interval.IntervalGlobal import *
+from src.utils import *
 
 
 def change_location(receiver, x, z):
@@ -22,12 +23,12 @@ def close_combat_damage(attacker, receiver, damage):
     animation.append(LerpPosInterval(attacker["node"], 0.05, defencer_pos, blendType='noBlend'))
     animation.append(LerpPosInterval(attacker["node"], 0.05, attacker_pos, blendType='noBlend'))
     g_engine.animation.append(animation)
-    print("%s attacks %s with damage %d" % (attacker, receiver, damage))
+    add_message("%s attacks %s with damage %d" % (attacker, receiver, damage))
 
 
 def poison(receiver):
-    print(str(receiver) + " has been poisoned!\n")
+    add_message(str(receiver) + " has been poisoned!\n")
 
 
 def stuck(receiver):
-    print(str(receiver) + " has been stuck\n")
+    add_message(str(receiver) + " has been stuck\n")
