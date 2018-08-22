@@ -37,6 +37,12 @@ class ControlState(FSM):
        self.participants = []
        self.request('Move')
 
+    # quit aiming mode without perfrom action
+    def quit_aiming(self):
+        self.action_stack = []
+        self.participants = []
+        self.request('Move')
+
     # player do aiming
     def enterAiming(self):
         # spawn a cursor at the center
@@ -70,8 +76,12 @@ class ControlState(FSM):
                 # True for next turn
                 return True
         elif self.state == 'Aiming':
+            # if user want to escape the target selection
+            if event == 'escape':
+                self.quit_aiming()
+                # False to maintain the player turn
+                return False
             # return the selected target
-            # TODO make sure handle will only return one target
             obj, ability = self.action_stack[-1]
             result = self.GUI.handle_aiming_key(event, obj, ability)
             # if we found targets, add them to participants

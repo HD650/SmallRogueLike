@@ -46,6 +46,7 @@ class Engine(ShowBase):
         self.accept("arrow_down", self.handle_key, ["s"])
         self.accept("space", self.handle_key, ["space"])
         self.accept("enter", self.handle_key, ["enter"])
+        self.accept("escape", self.handle_key, ["escape"])
 
     # TODO the engine get ready do not need to init the scene, this should be done in the state machine
     def get_ready(self):

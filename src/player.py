@@ -29,6 +29,8 @@ class Player(object.Object):
             pos.x += 1
         if event is 'enter':
             return BaseCombatAbility
+        if event is 'escape':
+            return False
 
         # move ability is the only ability not handled by gui
         do_ability(MobileAbility, self, pos.x, pos.z)
